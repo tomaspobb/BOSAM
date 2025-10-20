@@ -1,8 +1,210 @@
-:root { --bosam-red:#E11D48; --bosam-black:#111827; --bosam-white:#ffffff; }
-body{ background:#fff; color:var(--bosam-black); }
-a{ color:var(--bosam-red); text-decoration:none; }
-.navbar{ background:var(--bosam-black); }
-.btn-bosam{ background:var(--bosam-red); color:#fff; border:none; }
-.btn-bosam:hover{ filter:brightness(.95); }
-.card{ border-radius:1rem; border:1px solid #ececec; }
-.table thead{ background:#111827; color:#fff; }
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+
+:root {
+  --bosam-red: #e63946;
+  --bosam-dark: #0b0c10;
+  --bosam-light: #ffffff;
+  --bosam-gray: #d6d6d6;
+  --bosam-muted: #666;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bosam-light);
+  color: var(--bosam-dark);
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar-bosam {
+  background-color: var(--bosam-dark);
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.navbar-bosam a {
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.navbar-bosam .brand {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  color: var(--bosam-red);
+}
+
+/* Footer */
+.footer-bosam {
+  background-color: var(--bosam-dark);
+  color: #ccc;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+}
+
+/* Card base */
+.card-bosam {
+  background-color: white;
+  border: 1px solid var(--bosam-gray);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  padding: 2rem;
+  transition: all 0.2s ease;
+}
+
+.card-bosam:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Botones */
+.btn-bosam {
+  background-color: var(--bosam-red);
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-bosam:hover {
+  background-color: #d62839;
+  transform: translateY(-2px);
+}
+
+/* Inputs */
+.form-control {
+  border: 1px solid var(--bosam-gray);
+  border-radius: 6px;
+  padding: 0.8rem;
+  width: 100%;
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.form-label {
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+/* Centrado Auth */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+
+:root{
+  --bosam-red:#e63946;
+  --bosam-red-dk:#d62839;
+  --bosam-black:#0b0c10;
+  --bosam-text:#1c1e23;
+  --bosam-white:#ffffff;
+  --bosam-gray:#dcdfe6;
+  --bosam-muted:#6b7280;
+}
+
+*{ box-sizing:border-box; }
+html,body{
+  margin:0; padding:0; min-height:100%;
+  background: var(--bosam-white);
+  color: var(--bosam-text);
+  font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+}
+
+/* Navbar / Footer (para páginas no-auth) */
+.navbar-bosam{
+  background: var(--bosam-black);
+  color:#fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,.18);
+}
+.navbar-bosam .brand{
+  color: var(--bosam-red);
+  font-weight: 800;
+  letter-spacing:.5px;
+  font-size:1.4rem;
+}
+.footer-bosam{
+  background: var(--bosam-black);
+  color:#cfd3dc;
+  text-align:center;
+  padding:1rem;
+}
+
+/* Tarjetas */
+.card-bosam{
+  background:#fff;
+  border:1px solid var(--bosam-gray);
+  border-radius:14px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  padding:1.5rem;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card-bosam:hover{ transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.12); }
+
+/* Botones */
+.btn-bosam{
+  background: var(--bosam-red);
+  color:#fff; border:none; border-radius:10px;
+  font-weight:800; padding:.7rem 1.25rem;
+}
+.btn-bosam:hover{ background: var(--bosam-red-dk); transform: translateY(-1px); }
+
+/* Inputs */
+.form-label{ font-weight:700; color:#111; }
+.form-control{
+  border:1px solid var(--bosam-gray);
+  border-radius:10px; padding:.85rem 1rem;
+}
+.form-control:focus{
+  border-color: var(--bosam-red);
+  box-shadow: 0 0 0 .25rem rgba(230,57,70,.12);
+  outline: none;
+}
+
+/* Auth pages */
+.auth-wrap{
+  display:flex; align-items:center; justify-content:center;
+  min-height: calc(100vh - 0px);
+  padding: 2rem 1rem;
+}
+.auth-card{
+  max-width: 520px; width:100%;
+}
+.switch-card{
+  max-width:520px; width:100%;
+  margin-top: .75rem; padding: .9rem 1.1rem;
+  border-radius: 10px;
+  border:1px dashed var(--bosam-gray);
+  background:#fff;
+  text-align:center;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+.switch-link{
+  color: var(--bosam-red); font-weight:800; text-decoration:none;
+}
+.switch-link:hover{ color: var(--bosam-red-dk); }
+.card-bosam {
+  transform: translateZ(0) scale(1);
+}
+.card-bosam:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+/* Espaciado más holgado en formularios */
+.form-group { margin-bottom: 1.1rem; }
+.form-label { display:block; font-weight:700; color:#111; margin-bottom: .6rem; }
+.form-control { margin: 0 !important; } /* evita margen extra raro */

@@ -1,13 +1,17 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './globals.css';
-import { ReactNode } from 'react';
+import "./globals.css";
+import AppShell from "@/components/AppShell";
 
-export const metadata = { title: 'Bosam', description: 'Gestión de Facturas' };
+export const metadata = {
+  title: "Bosam",
+  description: "Gestión de proyectos y facturación"
+};
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }
