@@ -1,0 +1,8 @@
+:root { --bosam-red:#E11D48; --bosam-black:#111827; --bosam-white:#ffffff; }
+body{ background:#fff; color:var(--bosam-black); }
+a{ color:var(--bosam-red); text-decoration:none; }
+.navbar{ background:var(--bosam-black); }
+.btn-bosam{ background:var(--bosam-red); color:#fff; border:none; }
+.btn-bosam:hover{ filter:brightness(.95); }
+.card{ border-radius:1rem; border:1px solid #ececec; }
+.table thead{ background:#111827; color:#fff; }
