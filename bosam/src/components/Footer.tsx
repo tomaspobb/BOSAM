@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer className="footer-bosam">
-      © {new Date().getFullYear()} Bosam — Gestión estética y productiva
+      <small>© {new Date().getFullYear()} Bosam — Diseño gráfico y publicidad</small>
     </footer>
   );
 }

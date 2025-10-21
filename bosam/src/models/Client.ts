@@ -1,8 +1,15 @@
-import { Schema, model, models } from "mongoose";
+import mongoose, { Schema, models } from "mongoose";
 
-const ClientSchema = new Schema({
-  name: { type: String, required: true },
-  code: { type: String, required: true, unique: true },
-}, { timestamps: true });
+const clientSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    code: { type: String, required: true }, // código concesionario, por ejemplo
+    email: { type: String },
+    phone: { type: String },
+    address: { type: String },
+  },
+  { timestamps: true }
+);
 
-export default models.Client || model("Client", ClientSchema);
+const Client = models.Client || mongoose.model("Client", clientSchema);
+export default Client;

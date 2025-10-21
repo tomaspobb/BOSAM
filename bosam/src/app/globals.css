@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
 
+/* ========= PALETA ========= */
 :root{
   --bosam-red:#e63946;
   --bosam-red-dk:#d62839;
@@ -8,67 +9,92 @@
   --bosam-text:#1c1e23;
   --bosam-gray:#e7e8ee;
   --bosam-muted:#6b7280;
+
+  --h1-size: clamp(1.6rem, 1.2rem + 2vw, 2.2rem);
+  --h2-size: clamp(1.25rem, 1rem + 1vw, 1.6rem);
+  --body-size: 0.98rem;
+  --muted-size: 0.9rem;
+  --radius: 14px;
 }
 
+/* ========= RESET + TIPOGRAFÍA ========= */
 *{ box-sizing:border-box; font-family:'Montserrat',system-ui,Segoe UI,Arial,sans-serif; }
-
-html,body{
-  margin:0; padding:0; min-height:100%;
-  background:#f7f8fb;             /* blanco suave más bonito que #fff plano */
+html, body { height: 100%; }
+body{
+  margin:0; padding:0;
+  min-height:100vh;
+  display:flex;              /* <- sticky footer */
+  flex-direction:column;     /* <- navbar + main + footer */
+  background:#f7f8fb;
   color: var(--bosam-text);
+  font-size: var(--body-size);
 }
+main{ flex:1 0 auto; }       /* <- empuja el footer al fondo */
 
-/* =================== NAVBAR =================== */
+h1, .h1{ font-weight:800; font-size:var(--h1-size); letter-spacing:.2px; margin-bottom:.4rem; }
+h2, .h2{ font-weight:700; font-size:var(--h2-size); }
+h3, h4{ font-weight:700; }
+.text-muted{ font-size:var(--muted-size); }
+
+/* ========= NAVBAR ========= */
 .navbar-bosam{
   background: var(--bosam-black);
   color:#fff;
-  padding:.85rem 1rem;
+  padding:.65rem 1rem;
   box-shadow:0 6px 18px rgba(0,0,0,.22);
 }
 .navbar-bosam .brand{
-  color: var(--bosam-red) !important;
-  font-weight:900; letter-spacing:.6px; font-size:1.35rem;
+  color:#e63946 !important;
+  font-weight:900; letter-spacing:.6px; font-size:1.25rem;
   text-decoration:none !important;
 }
 
-/* Links del navbar (fuerza color y sin subrayado, incluso visitados) */
+/* Links del navbar (forzamos color y sin visited morado) */
 .nav-link-fgm,
-.nav-link-fgm:visited{
+.nav-link-fgm:visited,
+.nav-link-fgm:focus,
+.nav-link-fgm:active{
   color:#fff !important;
-  opacity:.92; font-weight:800;
-  padding:.45rem .9rem; border-radius:.6rem;
+  font-weight:800;
+  padding:.45rem .9rem;
+  border-radius:.6rem;
   text-decoration:none !important;
+  opacity:1 !important;
 }
-.nav-link-fgm:hover{ opacity:1; background:rgba(255,255,255,.08); }
-.nav-link-fgm.active{ background:var(--bosam-red); color:#fff !important; }
+.nav-link-fgm:hover{ background:rgba(255,255,255,.1); }
+.nav-link-fgm.active{ background:#e63946; color:#fff !important; }
 
-/* =================== FOOTER =================== */
+/* ========= FOOTER (queda abajo) ========= */
 .footer-bosam{
   background: var(--bosam-black);
-  color:#cfd3dc; text-align:center; padding:1rem;
+  color:#cfd3dc;
+  text-align:center;
+  padding:1rem;
+  margin-top:auto;           /* <- por si alguna página no usa <main> */
 }
 
-/* =================== CARDS =================== */
+/* ========= CARDS ========= */
 .card-bosam{
   background:#fff;
   border:1px solid var(--bosam-gray);
-  border-radius:14px;
+  border-radius:var(--radius);
   box-shadow:0 10px 26px rgba(0,0,0,.08);
-  padding:1.25rem;
+  padding:1.1rem;
   transition:transform .18s ease, box-shadow .18s ease;
 }
 .card-bosam:hover{ transform:translateY(-3px) scale(1.01); box-shadow:0 14px 34px rgba(0,0,0,.12); }
+.card-bosam.compact{ padding:.85rem 1rem; }
 
-/* =================== BUTTONS =================== */
+/* ========= BOTONES ========= */
 .btn-bosam{
   background:var(--bosam-red);
   color:#fff; border:none; border-radius:10px;
-  font-weight:900; padding:.7rem 1.2rem;
+  font-weight:900; padding:.55rem 1rem;
 }
 .btn-bosam:hover{ background:var(--bosam-red-dk); transform:translateY(-1px); }
-.btn-outline-dark{ font-weight:800; }
+.btn-outline-dark{ font-weight:800; padding:.5rem .9rem; border-radius:9px; }
 
-/* =================== FORMS =================== */
+/* ========= FORMS ========= */
 .form-group{ margin-bottom:1.1rem; }
 .form-label{ display:block; font-weight:900; color:#111; margin-bottom:.6rem; }
 .form-control{
@@ -81,7 +107,7 @@ html,body{
   outline:none;
 }
 
-/* =================== AUTH =================== */
+/* ========= AUTH ========= */
 .auth-wrap{
   display:flex; align-items:center; justify-content:center;
   min-height:100vh; padding:2rem 1rem;
@@ -96,65 +122,46 @@ html,body{
 .switch-link{ color:var(--bosam-red); font-weight:900; text-decoration:none; }
 .switch-link:hover{ color:var(--bosam-red-dk); }
 
-/* =================== TABLE =================== */
+/* ========= TABLE ========= */
 .table thead th{ font-weight:900; color:#111; }
-.table td{ color:#222; }
-/* ====== Tipografías y spacing más delicados ====== */
-:root{
-  --h1-size: clamp(1.6rem, 1.2rem + 2vw, 2.2rem);
-  --h2-size: clamp(1.25rem, 1rem + 1vw, 1.6rem);
-  --body-size: 0.98rem;
-  --muted-size: 0.9rem;
-  --radius: 14px;
+.table td{ color:#222; padding:.55rem .75rem; }
+
+/* ========= UTILIDADES DASHBOARD ========= */
+.page-wrap { max-width:1200px; margin-inline:auto; padding-inline:.5rem; }
+.section-header{ display:flex; align-items:end; justify-content:space-between; gap:.75rem; }
+.section-title{ margin:0; }
+.section-sub{ color:#6b7280; font-size:.9rem; }
+
+.stats-grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:.8rem; }
+.stat-card{ grid-column:span 4; display:flex; align-items:center; gap:.8rem; }
+.stat-icon{ width:42px; height:42px; border-radius:10px; background:#f2f3f7; display:grid; place-items:center; }
+.stat-title{ font-size:.9rem; color:#6b7280; margin-bottom:.15rem; }
+.stat-value{ font-weight:800; font-size:1.4rem; line-height:1; }
+/* ===== Ajuste de contenedor global (que no se vea chiquito) ===== */
+.page-wrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 1.25rem .75rem;  /* más respirado */
 }
 
-body { font-size: var(--body-size); }
-
-h1, .h1 {
-  font-weight: 800;
-  font-size: var(--h1-size);
-  letter-spacing: .2px;
-  margin-bottom: .4rem;
+/* Títulos de página y barra de acciones alineados */
+.page-head {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:.75rem; margin-bottom: .9rem;
 }
-h2, .h2 { font-weight: 700; font-size: var(--h2-size); }
-h3, h4 { font-weight: 700; }
-.text-muted { font-size: var(--muted-size); }
+.page-title { margin:0; font-weight:800; }
 
-/* cards más compactas */
-.card-bosam {
+/* Tarjeta de lista más ancha y con sombra suave */
+.list-card {
+  background:#fff; border:1px solid var(--bosam-gray);
   border-radius: var(--radius);
-  padding: 1.1rem;                 /* antes 1.25/1.5 */
+  box-shadow: 0 12px 30px rgba(0,0,0,.07);
+  padding: 1rem 1.1rem;
 }
-.card-bosam.compact { padding: .85rem 1rem; }
 
-/* botones más livianos */
-.btn-bosam { padding: .55rem 1rem; border-radius: 9px; font-weight: 800; }
-.btn-outline-dark { padding: .5rem .9rem; border-radius: 9px; }
-
-/* tablas un poquito más chicas */
-.table td, .table th { padding: .55rem .75rem; }
-
-/* grid helper para métricas */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: .8rem;
+/* Estado vacío mejor presentado */
+.empty {
+  padding:1.2rem; color:#6b7280; text-align:center;
+  border:1px dashed #e0e1e8; border-radius:10px;
+  background:#fff;
 }
-.stat-card {
-  grid-column: span 4;
-  display:flex; align-items:center; gap:.8rem;
-}
-.stat-icon {
-  width:42px;height:42px; border-radius:10px;
-  background:#f2f3f7; display:grid; place-items:center;
-}
-.stat-title { font-size:.9rem; color:#6b7280; margin-bottom:.15rem; }
-.stat-value { font-weight:800; font-size:1.4rem; line-height:1; }
-
-/* contenedor más respirado y ancho controlado */
-.page-wrap { max-width: 1200px; margin-inline: auto; padding-inline: .5rem; }
-
-/* headings de sección con subtítulo */
-.section-header { display:flex; align-items:end; justify-content:space-between; gap:.75rem; }
-.section-title { margin:0; }
-.section-sub { color:#6b7280; font-size:.9rem; }

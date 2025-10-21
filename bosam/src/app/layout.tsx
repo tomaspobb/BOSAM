@@ -1,14 +1,15 @@
-import "bootstrap/dist/css/bootstrap.min.css"; // <= SÍ o sí aquí, una sola vez
-import "./globals.css";
-import AppShell from "@/components/AppShell";
-
-export const metadata = { title: "Bosam", description: "Gestión de proyectos y facturación" };
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './globals.css';
+import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <body>
-        <AppShell>{children}</AppShell>
+        <NavBar />   {/* ✅ aparece arriba */}
+        {children}
+        <Footer />   {/* ✅ aparece abajo */}
       </body>
     </html>
   );
