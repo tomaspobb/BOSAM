@@ -19,5 +19,5 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <main className="container py-4">{children}</main>
       <Footer />
     </>
-  );
+  );a
 }

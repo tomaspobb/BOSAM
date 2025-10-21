@@ -1,10 +1,8 @@
+import "bootstrap/dist/css/bootstrap.min.css"; // <= SÍ o sí aquí, una sola vez
 import "./globals.css";
 import AppShell from "@/components/AppShell";
 
-export const metadata = {
-  title: "Bosam",
-  description: "Gestión de proyectos y facturación"
-};
+export const metadata = { title: "Bosam", description: "Gestión de proyectos y facturación" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

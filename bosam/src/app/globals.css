@@ -6,7 +6,7 @@
   --bosam-black:#0b0c10;
   --bosam-white:#ffffff;
   --bosam-text:#1c1e23;
-  --bosam-gray:#dcdfe6;
+  --bosam-gray:#e7e8ee;
   --bosam-muted:#6b7280;
 }
 
@@ -14,91 +14,147 @@
 
 html,body{
   margin:0; padding:0; min-height:100%;
-  background: var(--bosam-white);
+  background:#f7f8fb;             /* blanco suave más bonito que #fff plano */
   color: var(--bosam-text);
 }
 
-/* ============ NAVBAR & LINKS (solo fuera de /auth) ============ */
+/* =================== NAVBAR =================== */
 .navbar-bosam{
   background: var(--bosam-black);
   color:#fff;
-  padding: .85rem 1rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,.22);
+  padding:.85rem 1rem;
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
 }
 .navbar-bosam .brand{
-  color: var(--bosam-red);
-  font-weight: 900;
-  letter-spacing:.6px;
-  font-size:1.35rem;
-  text-decoration:none;
+  color: var(--bosam-red) !important;
+  font-weight:900; letter-spacing:.6px; font-size:1.35rem;
+  text-decoration:none !important;
 }
 
-.nav-link-fgm{
-  color:#fff; opacity:.88; font-weight:800; padding:.45rem .9rem;
-  border-radius:.6rem; text-decoration:none;
+/* Links del navbar (fuerza color y sin subrayado, incluso visitados) */
+.nav-link-fgm,
+.nav-link-fgm:visited{
+  color:#fff !important;
+  opacity:.92; font-weight:800;
+  padding:.45rem .9rem; border-radius:.6rem;
+  text-decoration:none !important;
 }
 .nav-link-fgm:hover{ opacity:1; background:rgba(255,255,255,.08); }
-.nav-link-fgm.active{ background:var(--bosam-red); color:#fff; }
+.nav-link-fgm.active{ background:var(--bosam-red); color:#fff !important; }
 
-/* ============ FOOTER ============ */
+/* =================== FOOTER =================== */
 .footer-bosam{
   background: var(--bosam-black);
-  color:#cfd3dc;
-  text-align:center;
-  padding:1rem;
+  color:#cfd3dc; text-align:center; padding:1rem;
 }
 
-/* ============ CARDS ============ */
+/* =================== CARDS =================== */
 .card-bosam{
   background:#fff;
   border:1px solid var(--bosam-gray);
   border-radius:14px;
-  box-shadow: 0 10px 26px rgba(0,0,0,.08);
-  padding:1.5rem;
-  transition: transform .18s ease, box-shadow .18s ease;
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
+  padding:1.25rem;
+  transition:transform .18s ease, box-shadow .18s ease;
 }
-.card-bosam:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 14px 34px rgba(0,0,0,.12); }
+.card-bosam:hover{ transform:translateY(-3px) scale(1.01); box-shadow:0 14px 34px rgba(0,0,0,.12); }
 
-/* ============ BUTTONS ============ */
+/* =================== BUTTONS =================== */
 .btn-bosam{
-  background: var(--bosam-red);
+  background:var(--bosam-red);
   color:#fff; border:none; border-radius:10px;
   font-weight:900; padding:.7rem 1.2rem;
 }
-.btn-bosam:hover{ background: var(--bosam-red-dk); transform: translateY(-1px); }
-
+.btn-bosam:hover{ background:var(--bosam-red-dk); transform:translateY(-1px); }
 .btn-outline-dark{ font-weight:800; }
 
-/* ============ FORM (espaciado lindo) ============ */
-.form-group { margin-bottom: 1.1rem; }
-.form-label { display:block; font-weight:900; color:#111; margin-bottom:.6rem; }
+/* =================== FORMS =================== */
+.form-group{ margin-bottom:1.1rem; }
+.form-label{ display:block; font-weight:900; color:#111; margin-bottom:.6rem; }
 .form-control{
-  border:1px solid var(--bosam-gray);
-  border-radius:10px; padding:.85rem 1rem; margin:0 !important;
+  border:1px solid #d9dbe3; border-radius:10px;
+  padding:.85rem 1rem; margin:0 !important; background:#fff;
 }
 .form-control:focus{
   border-color: var(--bosam-red);
-  box-shadow: 0 0 0 .25rem rgba(230,57,70,.12);
-  outline: none;
+  box-shadow:0 0 0 .25rem rgba(230,57,70,.12);
+  outline:none;
 }
 
-/* ============ AUTH PAGES ============ */
+/* =================== AUTH =================== */
 .auth-wrap{
   display:flex; align-items:center; justify-content:center;
-  min-height: 100vh;
-  padding: 2rem 1rem;
+  min-height:100vh; padding:2rem 1rem;
 }
 .auth-card{ max-width:520px; width:100%; }
 .switch-card{
   max-width:520px; width:100%;
   margin-top:.75rem; padding:.9rem 1.1rem;
-  border-radius:10px; border:1px dashed var(--bosam-gray);
-  background:#fff; text-align:center;
-  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+  border-radius:10px; border:1px dashed #e0e1e8; background:#fff;
+  text-align:center; box-shadow:0 6px 16px rgba(0,0,0,.06);
 }
-.switch-link{ color: var(--bosam-red); font-weight:900; text-decoration:none; }
-.switch-link:hover{ color: var(--bosam-red-dk); }
+.switch-link{ color:var(--bosam-red); font-weight:900; text-decoration:none; }
+.switch-link:hover{ color:var(--bosam-red-dk); }
 
-/* ============ TABLES ============ */
+/* =================== TABLE =================== */
 .table thead th{ font-weight:900; color:#111; }
 .table td{ color:#222; }
+/* ====== Tipografías y spacing más delicados ====== */
+:root{
+  --h1-size: clamp(1.6rem, 1.2rem + 2vw, 2.2rem);
+  --h2-size: clamp(1.25rem, 1rem + 1vw, 1.6rem);
+  --body-size: 0.98rem;
+  --muted-size: 0.9rem;
+  --radius: 14px;
+}
+
+body { font-size: var(--body-size); }
+
+h1, .h1 {
+  font-weight: 800;
+  font-size: var(--h1-size);
+  letter-spacing: .2px;
+  margin-bottom: .4rem;
+}
+h2, .h2 { font-weight: 700; font-size: var(--h2-size); }
+h3, h4 { font-weight: 700; }
+.text-muted { font-size: var(--muted-size); }
+
+/* cards más compactas */
+.card-bosam {
+  border-radius: var(--radius);
+  padding: 1.1rem;                 /* antes 1.25/1.5 */
+}
+.card-bosam.compact { padding: .85rem 1rem; }
+
+/* botones más livianos */
+.btn-bosam { padding: .55rem 1rem; border-radius: 9px; font-weight: 800; }
+.btn-outline-dark { padding: .5rem .9rem; border-radius: 9px; }
+
+/* tablas un poquito más chicas */
+.table td, .table th { padding: .55rem .75rem; }
+
+/* grid helper para métricas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: .8rem;
+}
+.stat-card {
+  grid-column: span 4;
+  display:flex; align-items:center; gap:.8rem;
+}
+.stat-icon {
+  width:42px;height:42px; border-radius:10px;
+  background:#f2f3f7; display:grid; place-items:center;
+}
+.stat-title { font-size:.9rem; color:#6b7280; margin-bottom:.15rem; }
+.stat-value { font-weight:800; font-size:1.4rem; line-height:1; }
+
+/* contenedor más respirado y ancho controlado */
+.page-wrap { max-width: 1200px; margin-inline: auto; padding-inline: .5rem; }
+
+/* headings de sección con subtítulo */
+.section-header { display:flex; align-items:end; justify-content:space-between; gap:.75rem; }
+.section-title { margin:0; }
+.section-sub { color:#6b7280; font-size:.9rem; }
