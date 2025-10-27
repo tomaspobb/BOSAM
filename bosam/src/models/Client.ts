@@ -1,15 +1,21 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 
-const clientSchema = new Schema(
+export type ClientDoc = {
+  name: string;
+  code: string;
+};
+
+const clientSchema = new Schema<ClientDoc>(
   {
-    name: { type: String, required: true },
-    code: { type: String, required: true }, // código concesionario, por ejemplo
-    email: { type: String },
-    phone: { type: String },
-    address: { type: String },
+    name: { type: String, required: true, trim: true },
+    code: { type: String, required: true, trim: true, uppercase: true },
   },
   { timestamps: true }
 );
 
-const Client = models.Client || mongoose.model("Client", clientSchema);
+// 🔒 patrón estable para Next 15
+const Client: Model<ClientDoc> =
+  (mongoose.models && (mongoose.models.Client as Model<ClientDoc>)) ||
+  mongoose.model<ClientDoc>("Client", clientSchema);
+
 export default Client;

@@ -1,106 +1,160 @@
-"use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { FaUsers, FaTasks, FaDollarSign } from "react-icons/fa";
+'use client';
 
-type Client = { _id?:string; name:string; code:string };
-type Project = { _id?:string; clientId:any; date:string; total:number; note?:string };
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { FaUsers, FaTasks, FaDollarSign } from 'react-icons/fa';
 
-export default function Dashboard(){
-  const [clients,setClients]=useState<Client[]>([]);
-  const [projects,setProjects]=useState<Project[]>([]);
-  const totalMonth = projects.reduce((s,p)=> s + (p.total||0), 0);
+type Client = { _id: string; name: string; code: string };
+type Project = {
+  _id: string;
+  clientId: { name: string; code: string } | string;
+  date: string;
+  total: number;
+  note?: string;
+};
 
-  useEffect(()=>{ (async()=>{
-    const [c,p] = await Promise.all([
-      fetch("/api/clients").then(r=>r.json()),
-      fetch("/api/projects").then(r=>r.json()),
-    ]);
-    setClients(c); setProjects(p);
-  })() },[]);
+export default function Dashboard() {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [cs, ps] = await Promise.all([
+          fetch('/api/clients').then(r => r.json()),
+          // 👇 importante que /api/projects POPULE el clientId
+          fetch('/api/projects?limit=20').then(r => r.json()),
+        ]);
+        setClients(Array.isArray(cs) ? cs : []);
+        setProjects(Array.isArray(ps) ? ps : []);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const totalMonth = useMemo(
+    () => projects.reduce((s, p) => s + (p.total || 0), 0),
+    [projects]
+  );
 
   return (
-    <main className="py-3 page-wrap">
-      {/* header */}
-      <div className="card-bosam compact mb-3 section-header">
+    <main className="container py-4">
+      {/* Header */}
+      <div className="d-flex flex-wrap align-items-center justify-content-between mb-3">
         <div>
-          <h1 className="section-title">Panel general</h1>
-          <div className="section-sub">Resumen de tu mes</div>
+          <h1 className="page-title mb-1">Panel general</h1>
+          <div className="text-muted">Resumen del mes</div>
         </div>
         <div className="d-flex gap-2">
-          <Link href="/clients"  className="btn btn-outline-dark">+ Cliente</Link>
+          <Link href="/clients" className="btn btn-outline-dark">+ Cliente</Link>
           <Link href="/projects" className="btn-bosam">+ Proyecto</Link>
         </div>
       </div>
 
-      {/* métricas */}
-      <div className="stats-grid mb-3">
-        <div className="card-bosam stat-card">
-          <div className="stat-icon"><FaUsers /></div>
-          <div>
-            <div className="stat-title">Clientes</div>
-            <div className="stat-value">{clients.length}</div>
+      {/* Métricas (full-width) */}
+      <div className="row g-3 mb-4">
+        <div className="col-12 col-md-4">
+          <div className="card-bosam h-100 d-flex align-items-center gap-3 p-3">
+            <div className="stat-icon"><FaUsers /></div>
+            <div>
+              <div className="text-muted small">Clientes</div>
+              <div className="h3 m-0">{clients.length}</div>
+            </div>
           </div>
         </div>
 
-        <div className="card-bosam stat-card">
-          <div className="stat-icon"><FaTasks /></div>
-          <div>
-            <div className="stat-title">Proyectos</div>
-            <div className="stat-value">{projects.length}</div>
+        <div className="col-12 col-md-4">
+          <div className="card-bosam h-100 d-flex align-items-center gap-3 p-3">
+            <div className="stat-icon"><FaTasks /></div>
+            <div>
+              <div className="text-muted small">Proyectos</div>
+              <div className="h3 m-0">{projects.length}</div>
+            </div>
           </div>
         </div>
 
-        <div className="card-bosam stat-card">
-          <div className="stat-icon"><FaDollarSign /></div>
-          <div>
-            <div className="stat-title">Total mensual</div>
-            <div className="stat-value">${totalMonth.toLocaleString()}</div>
+        <div className="col-12 col-md-4">
+          <div className="card-bosam h-100 d-flex align-items-center gap-3 p-3">
+            <div className="stat-icon"><FaDollarSign /></div>
+            <div>
+              <div className="text-muted small">Total mensual</div>
+              <div className="h3 m-0">${totalMonth.toLocaleString()}</div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* dos bloques principales */}
+      {/* Listas lado a lado ocupando más espacio */}
       <div className="row g-3">
-        <div className="col-lg-6">
-          <div className="card-bosam">
-            <div className="section-header mb-2">
-              <h2 className="h2 section-title">Clientes registrados</h2>
-              <Link href="/clients" className="section-sub">Ver todos →</Link>
+        <div className="col-12 col-lg-6">
+          <div className="card-bosam h-100">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h2 className="h4 m-0">Clientes registrados</h2>
+              <Link href="/clients" className="text-muted">Ver todos →</Link>
             </div>
-            <ul className="mb-0">
-              {clients.length===0 && <li className="text-muted">Aún no hay clientes</li>}
-              {clients.slice(0,8).map(c=>(
-                <li key={c._id}><strong>{c.name}</strong> <span className="text-muted">({c.code})</span></li>
-              ))}
-            </ul>
+            {loading ? (
+              <div className="text-muted">Cargando…</div>
+            ) : clients.length === 0 ? (
+              <div className="text-muted">Aún no hay clientes</div>
+            ) : (
+              <ul className="list-unstyled mb-0">
+                {clients.slice(0, 10).map(c => (
+                  <li key={c._id} className="py-1">
+                    <strong>{c.name}</strong> <span className="text-muted">({c.code})</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
 
-        <div className="col-lg-6">
-          <div className="card-bosam">
-            <div className="section-header mb-2">
-              <h2 className="h2 section-title">Proyectos recientes</h2>
-              <Link href="/projects" className="section-sub">Ver todos →</Link>
+        <div className="col-12 col-lg-6">
+          <div className="card-bosam h-100">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h2 className="h4 m-0">Proyectos recientes</h2>
+              <Link href="/projects" className="text-muted">Ver todos →</Link>
             </div>
+
             <div className="table-responsive">
               <table className="table mb-0">
                 <thead>
-                  <tr><th>Cliente</th><th>Fecha</th><th>Total</th><th>Obs</th></tr>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Obs</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  {projects.length===0 && <tr><td colSpan={4} className="text-muted">Sin registros</td></tr>}
-                  {projects.slice(0,10).map((p:any)=>(
-                    <tr key={p._id}>
-                      <td>{p.clientId?.name}</td>
-                      <td>{p.date}</td>
-                      <td>${(p.total||0).toLocaleString()}</td>
-                      <td className="text-truncate" style={{maxWidth:200}}>{p.note}</td>
-                    </tr>
-                  ))}
+                  {loading ? (
+                    <tr><td colSpan={4} className="text-muted">Cargando…</td></tr>
+                  ) : projects.length === 0 ? (
+                    <tr><td colSpan={4} className="text-muted">Sin registros</td></tr>
+                  ) : (
+                    projects.slice(0, 12).map((p: any) => (
+                      <tr key={p._id}>
+                        <td>
+                          {typeof p.clientId === 'object'
+                            ? p.clientId?.name
+                            : '—'}
+                          {typeof p.clientId === 'object' && (
+                            <span className="text-muted"> ({p.clientId?.code})</span>
+                          )}
+                        </td>
+                        <td>{p.date}</td>
+                        <td>${(p.total || 0).toLocaleString()}</td>
+                        <td className="text-truncate" style={{ maxWidth: 260 }}>
+                          {p.note || '—'}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
+
           </div>
         </div>
       </div>

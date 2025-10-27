@@ -1,17 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { dbConnect } from "@/lib/mongodb";
 import User from "@/models/User";
 
-export async function POST(req: NextRequest) {
-  await dbConnect();
-  const { name, email, password } = await req.json();
-  if (!name || !email || !password) return NextResponse.json({ error: "Faltan campos" }, { status: 400 });
+export const runtime = "nodejs";
 
-  const exists = await User.findOne({ email });
-  if (exists) return NextResponse.json({ error: "Email ya registrado" }, { status: 409 });
+export async function POST(req: Request) {
+  try {
+    await dbConnect();
 
-  const passwordHash = await bcrypt.hash(password, 10);
-  await User.create({ name, email, passwordHash });
-  return NextResponse.json({ ok: true });
+    const { name, email, password } = await req.json();
+    if (!name?.trim() || !email?.trim() || !password) {
+      return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
+    }
+
+    const emailNorm = String(email).toLowerCase().trim();
+
+    const exist = await User.findOne({ email: emailNorm }).lean();
+    if (exist) {
+      return NextResponse.json({ error: "Email ya registrado" }, { status: 409 });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    await User.create({
+      name: name.trim(),
+      email: emailNorm,
+      passwordHash,
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (e: any) {
+    return NextResponse.json({ error: e?.message || "Error" }, { status: 500 });
+  }
 }

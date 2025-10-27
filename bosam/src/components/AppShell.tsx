@@ -1,4 +1,5 @@
 'use client';
+
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
@@ -7,8 +8,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAuth = pathname?.startsWith('/auth');
 
+  // Páginas de autenticación: sólo el formulario
   if (isAuth) {
-    // Auth pages: solo formulario, sin navbar/footer
     return <>{children}</>;
   }
 
@@ -19,5 +20,5 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <main className="container py-4">{children}</main>
       <Footer />
     </>
-  );a
+  );
 }

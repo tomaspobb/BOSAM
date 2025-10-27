@@ -1,60 +1,66 @@
-"use client";
-import { useEffect, useState, FormEvent } from "react";
+'use client';
+import { useEffect, useState } from 'react';
 
-type Client = { _id?:string; name:string; code:string };
+type Client = { _id: string; name: string; code: string };
 
-export default function ClientsPage(){
-  const [clients,setClients]=useState<Client[]>([]);
-  const [form,setForm]=useState<Client>({ name:"", code:"" });
+export default function ClientesPage() {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
 
-  async function load(){ setClients(await fetch("/api/clients").then(r=>r.json())); }
-  useEffect(()=>{ load(); },[]);
-
-  async function add(e:FormEvent){
-    e.preventDefault();
-    const res = await fetch("/api/clients",{ method:"POST", body: JSON.stringify(form) });
-    if(res.ok){ setForm({name:"", code:""}); load(); }
+  async function load() {
+    const list = await fetch('/api/clients').then(r => r.json());
+    setClients(list);
   }
 
+  async function add() {
+    if (!name || !code) return alert('Completa nombre y código');
+    await fetch('/api/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, code }),
+    });
+    setName(''); setCode('');
+    load();
+  }
+
+  async function remove(id: string) {
+    if (!confirm('¿Seguro que deseas borrar este cliente?')) return;
+    await fetch(`/api/clients?id=${id}`, { method: 'DELETE' });
+    load();
+  }
+
+  useEffect(() => { load(); }, []);
+
   return (
-    <main className="py-4">
-      <div className="card-bosam mb-3">
-        <h2 className="fw-bold m-0">Clientes</h2>
+    <main className="container py-4">
+      <h1 className="fw-bold display-5 m-0">Clientes</h1>
+
+      <div className="d-flex gap-2 mb-3">
+        <input className="form-control" placeholder="Nombre" value={name} onChange={e => setName(e.target.value)} />
+        <input className="form-control" placeholder="Código" value={code} onChange={e => setCode(e.target.value)} />
+        <button className="btn btn-bosam" onClick={add}>Agregar</button>
       </div>
 
-      <div className="row g-3">
-        <div className="col-md-4">
-          <div className="card-bosam">
-            <h5 className="fw-bold mb-3">Agregar cliente</h5>
-            <form onSubmit={add}>
-              <label className="form-label">Nombre</label>
-              <input className="form-control" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} required />
-
-              <label className="form-label">Código</label>
-              <input className="form-control" value={form.code} onChange={e=>setForm({...form, code:e.target.value.toUpperCase()})} required />
-
-              <div className="d-grid mt-3"><button className="btn-bosam">Guardar</button></div>
-            </form>
-          </div>
-        </div>
-
-        <div className="col-md-8">
-          <div className="card-bosam">
-            <h5 className="fw-bold mb-2">Listado</h5>
-            <div className="table-responsive">
-              <table className="table mb-0">
-                <thead><tr><th>Nombre</th><th>Código</th></tr></thead>
-                <tbody>
-                  {clients.length===0 && <tr><td colSpan={2} className="text-muted">Sin clientes</td></tr>}
-                  {clients.map(c=>(
-                    <tr key={c._id}><td>{c.name}</td><td>{c.code}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+      <table className="table">
+        <thead>
+          <tr><th>Nombre</th><th>Código</th><th></th></tr>
+        </thead>
+        <tbody>
+          {clients.map(c => (
+            <tr key={c._id}>
+              <td>{c.name}</td>
+              <td>{c.code}</td>
+              <td>
+                <button className="btn btn-sm btn-outline-danger" onClick={() => remove(c._id)}>
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
+          {clients.length === 0 && <tr><td colSpan={3} className="text-muted">Sin clientes registrados</td></tr>}
+        </tbody>
+      </table>
     </main>
   );
 }

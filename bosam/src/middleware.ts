@@ -1,2 +1,8 @@
 export { default } from "next-auth/middleware";
-export const config = { matcher: ["/dashboard/:path*"] };
+
+// Protegemos todo menos /auth y assets estáticos
+export const config = {
+  matcher: [
+    "/((?!auth|api/auth|_next/static|_next/image|favicon.ico).*)",
+  ],
+};
