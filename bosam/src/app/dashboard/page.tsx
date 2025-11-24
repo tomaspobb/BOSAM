@@ -8,7 +8,7 @@ type Client = { _id: string; name: string; code: string };
 type Project = {
   _id: string;
   clientId: { name: string; code: string } | string;
-  date: string; // se asume algo tipo "2025-11-13"
+  date: string; // se asume tipo "2025-11-13"
   total: number;
   note?: string;
 };
@@ -22,9 +22,9 @@ export default function Dashboard() {
     (async () => {
       try {
         const [cs, ps] = await Promise.all([
-          fetch('/api/clients').then(r => r.json()),
+          fetch('/api/clients').then((r) => r.json()),
           // 👇 importante que /api/projects POPULE el clientId
-          fetch('/api/projects?limit=20').then(r => r.json()),
+          fetch('/api/projects?limit=20').then((r) => r.json()),
         ]);
         setClients(Array.isArray(cs) ? cs : []);
         setProjects(Array.isArray(ps) ? ps : []);
@@ -34,18 +34,24 @@ export default function Dashboard() {
     })();
   }, []);
 
-  // --- FILTRO POR MES ACTUAL ---
+  // --- MES ACTUAL ---
   const now = new Date();
   const currentMonth = now.getMonth(); // 0–11
   const currentYear = now.getFullYear();
 
-  const projectsThisMonth = useMemo(() => {
-    return projects.filter(p => {
-      const d = new Date(p.date);
-      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-    });
-  }, [projects, currentMonth, currentYear]);
+  // Proyectos SOLO del mes actual
+  const projectsThisMonth = useMemo(
+    () =>
+      projects.filter((p) => {
+        // p.date se asume ISO YYYY-MM-DD
+        const d = new Date(p.date);
+        if (Number.isNaN(d.getTime())) return false;
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      }),
+    [projects, currentMonth, currentYear]
+  );
 
+  // Total mensual SOLO con proyectos del mes actual
   const totalMonth = useMemo(
     () => projectsThisMonth.reduce((s, p) => s + (p.total || 0), 0),
     [projectsThisMonth]
@@ -60,8 +66,12 @@ export default function Dashboard() {
           <div className="text-muted">Resumen del mes</div>
         </div>
         <div className="d-flex gap-2">
-          <Link href="/clients" className="btn btn-outline-dark">+ Cliente</Link>
-          <Link href="/projects" className="btn-bosam">+ Proyecto</Link>
+          <Link href="/clients" className="btn btn-outline-dark">
+            + Cliente
+          </Link>
+          <Link href="/projects" className="btn-bosam">
+            + Proyecto
+          </Link>
         </div>
       </div>
 
@@ -69,7 +79,9 @@ export default function Dashboard() {
       <div className="row g-3 mb-4">
         <div className="col-12 col-md-4">
           <div className="card-bosam h-100 d-flex align-items-center gap-3 p-3">
-            <div className="stat-icon"><FaUsers /></div>
+            <div className="stat-icon">
+              <FaUsers />
+            </div>
             <div>
               <div className="text-muted small">Clientes</div>
               <div className="h3 m-0">{clients.length}</div>
@@ -79,20 +91,26 @@ export default function Dashboard() {
 
         <div className="col-12 col-md-4">
           <div className="card-bosam h-100 d-flex align-items-center gap-3 p-3">
-            <div className="stat-icon"><FaTasks /></div>
+            <div className="stat-icon">
+              <FaTasks />
+            </div>
             <div>
-              <div className="text-muted small">Proyectos</div>
-              <div className="h3 m-0">{projects.length}</div>
+              <div className="text-muted small">Proyectos del mes</div>
+              <div className="h3 m-0">{projectsThisMonth.length}</div>
             </div>
           </div>
         </div>
 
         <div className="col-12 col-md-4">
           <div className="card-bosam h-100 d-flex align-items-center gap-3 p-3">
-            <div className="stat-icon"><FaDollarSign /></div>
+            <div className="stat-icon">
+              <FaDollarSign />
+            </div>
             <div>
               <div className="text-muted small">Total mensual</div>
-              <div className="h3 m-0">${totalMonth.toLocaleString()}</div>
+              <div className="h3 m-0">
+                ${totalMonth.toLocaleString('es-CL')}
+              </div>
             </div>
           </div>
         </div>
@@ -104,7 +122,9 @@ export default function Dashboard() {
           <div className="card-bosam h-100">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2 className="h4 m-0">Clientes registrados</h2>
-              <Link href="/clients" className="text-muted">Ver todos →</Link>
+              <Link href="/clients" className="text-muted">
+                Ver todos →
+              </Link>
             </div>
             {loading ? (
               <div className="text-muted">Cargando…</div>
@@ -112,7 +132,7 @@ export default function Dashboard() {
               <div className="text-muted">Aún no hay clientes</div>
             ) : (
               <ul className="list-unstyled mb-0">
-                {clients.slice(0, 10).map(c => (
+                {clients.slice(0, 10).map((c) => (
                   <li key={c._id} className="py-1">
                     <strong>{c.name}</strong>{' '}
                     <span className="text-muted">({c.code})</span>
@@ -126,8 +146,10 @@ export default function Dashboard() {
         <div className="col-12 col-lg-6">
           <div className="card-bosam h-100">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h2 className="h4 m-0">Proyectos recientes</h2>
-              <Link href="/projects" className="text-muted">Ver todos →</Link>
+              <h2 className="h4 m-0">Proyectos recientes (mes)</h2>
+              <Link href="/projects" className="text-muted">
+                Ver todos →
+              </Link>
             </div>
 
             <div className="table-responsive">
@@ -143,11 +165,15 @@ export default function Dashboard() {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={4} className="text-muted">Cargando…</td>
+                      <td colSpan={4} className="text-muted">
+                        Cargando…
+                      </td>
                     </tr>
                   ) : projectsThisMonth.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="text-muted">Sin registros</td>
+                      <td colSpan={4} className="text-muted">
+                        Sin registros
+                      </td>
                     </tr>
                   ) : (
                     projectsThisMonth.slice(0, 12).map((p: any) => (
@@ -157,12 +183,21 @@ export default function Dashboard() {
                             ? p.clientId?.name
                             : '—'}
                           {typeof p.clientId === 'object' && (
-                            <span className="text-muted"> ({p.clientId?.code})</span>
+                            <span className="text-muted">
+                              {' '}
+                              ({p.clientId?.code})
+                            </span>
                           )}
                         </td>
                         <td>{p.date}</td>
-                        <td>${(p.total || 0).toLocaleString()}</td>
-                        <td className="text-truncate" style={{ maxWidth: 260 }}>
+                        <td>
+                          $
+                          {(p.total || 0).toLocaleString('es-CL')}
+                        </td>
+                        <td
+                          className="text-truncate"
+                          style={{ maxWidth: 260 }}
+                        >
                           {p.note || '—'}
                         </td>
                       </tr>
@@ -171,7 +206,6 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-
           </div>
         </div>
       </div>
