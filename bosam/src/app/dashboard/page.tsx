@@ -8,7 +8,7 @@ type Client = { _id: string; name: string; code: string };
 type Project = {
   _id: string;
   clientId: { name: string; code: string } | string;
-  date: string;
+  date: string; // se asume algo tipo "2025-11-13"
   total: number;
   note?: string;
 };
@@ -34,9 +34,21 @@ export default function Dashboard() {
     })();
   }, []);
 
+  // --- FILTRO POR MES ACTUAL ---
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0–11
+  const currentYear = now.getFullYear();
+
+  const projectsThisMonth = useMemo(() => {
+    return projects.filter(p => {
+      const d = new Date(p.date);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    });
+  }, [projects, currentMonth, currentYear]);
+
   const totalMonth = useMemo(
-    () => projects.reduce((s, p) => s + (p.total || 0), 0),
-    [projects]
+    () => projectsThisMonth.reduce((s, p) => s + (p.total || 0), 0),
+    [projectsThisMonth]
   );
 
   return (
@@ -102,7 +114,8 @@ export default function Dashboard() {
               <ul className="list-unstyled mb-0">
                 {clients.slice(0, 10).map(c => (
                   <li key={c._id} className="py-1">
-                    <strong>{c.name}</strong> <span className="text-muted">({c.code})</span>
+                    <strong>{c.name}</strong>{' '}
+                    <span className="text-muted">({c.code})</span>
                   </li>
                 ))}
               </ul>
@@ -129,11 +142,15 @@ export default function Dashboard() {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <tr><td colSpan={4} className="text-muted">Cargando…</td></tr>
-                  ) : projects.length === 0 ? (
-                    <tr><td colSpan={4} className="text-muted">Sin registros</td></tr>
+                    <tr>
+                      <td colSpan={4} className="text-muted">Cargando…</td>
+                    </tr>
+                  ) : projectsThisMonth.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="text-muted">Sin registros</td>
+                    </tr>
                   ) : (
-                    projects.slice(0, 12).map((p: any) => (
+                    projectsThisMonth.slice(0, 12).map((p: any) => (
                       <tr key={p._id}>
                         <td>
                           {typeof p.clientId === 'object'

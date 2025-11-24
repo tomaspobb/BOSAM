@@ -17,9 +17,8 @@ type Project = {
 async function fetchAsBlob(url: string): Promise<Blob> {
   const res = await fetch(url);
   if (!res.ok) {
-    let msg = 'Error en la descarga';
-    try { msg = await res.text(); } catch {}
-    throw new Error(msg);
+    const short = `${res.status} ${res.statusText || ''}`.trim();
+    throw new Error(short || 'Error en la descarga');
   }
   return await res.blob();
 }
@@ -45,6 +44,9 @@ export default function ReportsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // proyectos seleccionados para PPT combinado
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
   /* clientes */
   useEffect(() => {
     (async () => {
@@ -66,13 +68,18 @@ export default function ReportsPage() {
       if (clientId) params.set('clientId', clientId);
       const data = await fetch(`/api/projects?${params.toString()}`).then((r) => r.json());
       setProjects(data || []);
+      setSelectedIds([]); // limpiamos selección al cambiar filtros
     } catch {
       setProjects([]);
+      setSelectedIds([]);
     } finally {
       setLoading(false);
     }
   }
-  useEffect(() => { load(); }, [month, clientId]);
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, clientId]);
 
   const sumTotal = useMemo(
     () => projects.reduce((s, p) => s + (p.total || 0), 0),
@@ -94,7 +101,7 @@ export default function ReportsPage() {
     );
   }
 
-  /* exportar PPT */
+  /* exportar PPT individual (tu ruta actual) */
   async function downloadPpt(projectId: string, filename = 'Proyecto.pptx') {
     const url = `/api/export/pptx?projectId=${projectId}`;
     await toast.promise(
@@ -103,14 +110,61 @@ export default function ReportsPage() {
     );
   }
 
+  /* exportar PPT combinado */
+  async function downloadCombinedPpt() {
+    if (selectedIds.length === 0) return;
+
+    const params = new URLSearchParams();
+    params.set('ids', selectedIds.join(','));
+    const url = `/api/export/pptx-bulk?${params.toString()}`;
+
+    await toast.promise(
+      fetchAsBlob(url).then((blob) =>
+        downloadBlob(blob, `Bosam_compilado_${month}.pptx`)
+      ),
+      {
+        loading: 'Creando PPT combinado…',
+        success: 'PPT combinado descargado',
+        error: 'No se pudo generar el PPT combinado',
+      }
+    );
+  }
+
+  // helpers selección
+  const allVisibleSelected =
+    projects.length > 0 && selectedIds.length === projects.length;
+
+  function toggleProject(id: string) {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  }
+
+  function toggleSelectAll() {
+    if (allVisibleSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(projects.map(p => p._id));
+    }
+  }
+
   return (
     <main className="container-fluid py-5 px-4" style={{ minHeight: '100vh' }}>
       {/* HEADER */}
       <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <h1 className="fw-bold display-5 m-0">Reportes</h1>
-        <button className="btn-bosam btn-lg" onClick={downloadExcel}>
-          Exportar Excel
-        </button>
+        <div className="d-flex flex-wrap gap-2">
+          <button
+            className="btn btn-outline-dark btn-lg"
+            disabled={selectedIds.length === 0}
+            onClick={downloadCombinedPpt}
+          >
+            PPT combinado ({selectedIds.length})
+          </button>
+          <button className="btn-bosam btn-lg" onClick={downloadExcel}>
+            Exportar Excel
+          </button>
+        </div>
       </div>
 
       {/* FILTROS */}
@@ -152,6 +206,11 @@ export default function ReportsPage() {
         <div className="d-flex justify-content-between mb-3">
           <div className="text-muted small">
             {loading ? 'Cargando…' : `${projects.length} proyectos`}
+            {selectedIds.length > 0 && !loading && (
+              <span className="ms-2">
+                · {selectedIds.length} seleccionados
+              </span>
+            )}
           </div>
           <Link href="/projects" className="text-muted small">
             Ir a Proyectos →
@@ -162,6 +221,13 @@ export default function ReportsPage() {
           <table className="table table-hover align-middle">
             <thead className="table-light">
               <tr>
+                <th style={{ width: 40 }}>
+                  <input
+                    type="checkbox"
+                    checked={allVisibleSelected}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Servicios</th>
@@ -172,13 +238,20 @@ export default function ReportsPage() {
             <tbody>
               {projects.length === 0 && !loading ? (
                 <tr>
-                  <td colSpan={5} className="text-center text-muted py-5">
+                  <td colSpan={6} className="text-center text-muted py-5">
                     Sin proyectos para el filtro seleccionado
                   </td>
                 </tr>
               ) : (
                 projects.map((p) => (
                   <tr key={p._id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(p._id)}
+                        onChange={() => toggleProject(p._id)}
+                      />
+                    </td>
                     <td>
                       {p.clientId?.name}{' '}
                       <span className="text-muted">({p.clientId?.code})</span>
